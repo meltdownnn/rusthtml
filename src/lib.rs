@@ -286,7 +286,7 @@ impl<'a> HtmlTag<'a> {
         let splitted_content = splitted_content
             .iter_mut()
             .map(|x| {
-                let equal_sign = x.rfind('=');
+                let equal_sign = x.find('=');
                 match equal_sign {
                     Some(i) => (
                         &x[..i],
