@@ -247,7 +247,7 @@ impl<'a> HtmlTag<'a> {
         let mut splitted_content = Vec::new();
         let mut space_position = 0;
         let mut is_empty = true;
-        let length = content.chars().count();
+        let length = content.as_bytes().len();
         for (index, i) in content.char_indices() {
             if i == ' ' && current_quotation == QuoteStatus::NoQuote && !is_empty {
                 // This is appropriate split position
@@ -258,7 +258,7 @@ impl<'a> HtmlTag<'a> {
                 splitted_content.push(&content[space_position..index]);
                 is_empty = true;
                 space_position = index;
-            } else if index + 1 == length {
+            } else if content[index..].chars().count() == 1 {
                 splitted_content.push(&content[space_position..].trim_start());
                 space_position = index + 1;
             } else if (i == '"') | (i == '\'') | (i == '!') {
