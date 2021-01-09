@@ -242,12 +242,12 @@ impl<'a> HtmlTag<'a> {
             SingleQuote,
             DoubleQuote,
             BangQuote,
-        };
+        }
         let mut current_quotation = QuoteStatus::NoQuote;
         let mut splitted_content = Vec::new();
         let mut space_position = 0;
         let mut is_empty = true;
-        let length = content.as_bytes().len();
+        //let length = content.as_bytes().len();
         for (index, i) in content.char_indices() {
             if i == ' ' && current_quotation == QuoteStatus::NoQuote && !is_empty {
                 // This is appropriate split position
@@ -298,4 +298,24 @@ impl<'a> HtmlTag<'a> {
             .collect();
         (name, splitted_content)
     }
+    pub fn to_hashmap(&self) -> HtmlTagMapped<'a> {
+        match self {
+            Self::OpeningTag(i, j) => {
+                let mut properties = std::collections::HashMap::new();
+                j.iter().for_each(|x| {
+                    properties.insert(x.0, x.1);
+                });
+                HtmlTagMapped::OpeningTag(i, properties)
+            }
+            Self::ClosingTag(i) => HtmlTagMapped::ClosingTag(i),
+            Self::Unparsable(i) => HtmlTagMapped::Unparsable(i),
+        }
+    }
+}
+/// A raw html tag representation with hashmap
+#[derive(PartialEq, Debug)]
+pub enum HtmlTagMapped<'a> {
+    OpeningTag(&'a str, std::collections::HashMap<&'a str, Option<&'a str>>),
+    ClosingTag(&'a str),
+    Unparsable(&'a str),
 }
