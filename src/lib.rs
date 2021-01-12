@@ -49,6 +49,7 @@ pub fn tag_optimize<'a>(mut content: Vec<HtmlTag<'a>>) -> Vec<HtmlTag<'a>> {
         }
         HtmlTag::ClosingTag(i) => format!("</{}>", i),
         HtmlTag::Unparsable(i) => i.to_string(),
+        HtmlTag::Comment(i) => format!("<{}>", i),
     };
     // TODO: implement `template`
     // TODO: implement `head`, `body` omition
@@ -166,6 +167,7 @@ impl<'a> ElementContent<'a> {
                     last_ref.tag_state = ElementTagState::BothTag;
                 }
                 HtmlTag::Unparsable(i) => constructed.push(Self::LiteralContent(i)),
+                HtmlTag::Comment(_) => {},
             }
         }
         Ok(constructed)
@@ -310,6 +312,7 @@ impl<'a> HtmlTag<'a> {
             }
             Self::ClosingTag(i) => HtmlTagMapped::ClosingTag(i),
             Self::Unparsable(i) => HtmlTagMapped::Unparsable(i),
+            Self::Comment(i) => HtmlTagMapped::Comment(i)
         }
     }
 }
@@ -319,4 +322,5 @@ pub enum HtmlTagMapped<'a> {
     OpeningTag(&'a str, std::collections::HashMap<&'a str, Option<&'a str>>),
     ClosingTag(&'a str),
     Unparsable(&'a str),
+    Comment(&'a str)
 }
