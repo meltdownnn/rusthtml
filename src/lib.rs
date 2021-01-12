@@ -178,6 +178,7 @@ pub enum HtmlTag<'a> {
     OpeningTag(&'a str, Vec<(&'a str, Option<&'a str>)>),
     ClosingTag(&'a str),
     Unparsable(&'a str),
+    Comment(&'a str)
 }
 impl<'a> HtmlTag<'a> {
     /// Parse a html to tags
@@ -213,7 +214,7 @@ impl<'a> HtmlTag<'a> {
                     }
                     Self::ClosingTag(&tag[1..])
                 } else if tag.chars().nth(0) == Some('!') {
-                    Self::Unparsable(tag)
+                    Self::Comment(tag)
                 } else {
                     if ignore_parsing.is_some() {
                         continue;
